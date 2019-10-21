@@ -11,35 +11,60 @@ public class Bot {
 			+ "\\exit - finish chatting with the bot";
 	
 	private static HashMap<String, Integer> availableGames; //TODO value type?
-	
-	public static void main(String[] args) {
-		Scanner in = new Scanner(System.in);
-		String arg = "";
-		while (arg != "\\exit")
-		{
-			arg = in.nextLine().trim();
-			if (!availableGames.containsKey(arg.substring(1)))
-				printHelp();
-			else //TODO change if
-			{
-				if (arg == "anagrams")
-				{
-					Anagrams game = new Anagrams();
-					game.Run();
-				}
-			}
-		}
-		printFinish();
-		in.close();
+
+	private Scanner inputStream_;
+	private boolean finished_;
+
+	public Bot() {
+		inputStream_ = new Scanner(System.in);
+		finished_ = false;
 	}
-	
-	private static void printFinish()
+
+	boolean IsCorrect(String data) {
+		return true;
+	}
+
+	void RunAnagrams() {
+	    Anagrams anagrams = new Anagrams();
+		System.out.println("Start anagrams game");
+		anagrams.Run();
+	}
+
+	void DoCommand(String data) {
+		if (data.equals("exit")) {
+			finished_ = true;
+		} else if (data.equals("anagrams")) {
+			RunAnagrams();
+		} else {
+			PrintHelp();
+		}
+	}
+
+	private static void PrintFinish()
 	{
 		System.out.println("The work with the bot was finished");
 	}
-	
-	private static void printHelp()
+
+	private static void PrintHelp()
 	{
 		System.out.println(helpMessage);
+	}
+
+	public void Run() {
+		String data = inputStream_.nextLine();
+		while (IsCorrect(data)) {
+			DoCommand(data);
+			if (finished_) {
+				break;
+			}
+			data = inputStream_.nextLine();
+		}
+		PrintFinish();
+		inputStream_.close();
+	}
+
+	public static void main(String[] args) {
+		Bot bot = new Bot();
+		bot.Run();
 	}
 }
