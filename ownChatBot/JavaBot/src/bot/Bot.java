@@ -27,7 +27,7 @@ public class Bot {
 	void RunAnagrams() {
 	    Anagrams anagrams = new Anagrams();
 		System.out.println("Start anagrams game");
-		anagrams.Run();
+		anagrams.Run(inputStream_);
 	}
 
 	void DoCommand(String data) {
