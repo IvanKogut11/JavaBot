@@ -1,17 +1,17 @@
 package bot;
 import java.util.Scanner;
-import java.util.HashMap;
+//import java.util.HashMap;
 import games.*;
 
 public class Bot {
 	
-	private static String helpMessage = "Commands:\n"
+	private static final String HELP_MESSAGE = "Commands:\n"
 			+ "\\help - prints all available commands\n"
 			+ "\\anagrams - play game \"anagrams\"\n"
 			+ "\\exit - finish chatting with the bot";
-	
-	private static HashMap<String, Integer> availableGames; //TODO value type?
-
+	private static final String EXIT_COMMAND = "\\exit";
+	private static final String FINISH_MESSAGE = "The work with the bot was finished";
+	private static final String RETURNING_MESSAGE = "You've returned to bot";
 	private Scanner inputStream_;
 	private boolean finished_;
 
@@ -19,52 +19,63 @@ public class Bot {
 		inputStream_ = new Scanner(System.in);
 		finished_ = false;
 	}
-
-	boolean IsCorrect(String data) {
-		return true;
-	}
-
-	void RunAnagrams() {
-	    Anagrams anagrams = new Anagrams();
-		System.out.println("Start anagrams game");
-		anagrams.Run(inputStream_);
-	}
-
-	void DoCommand(String data) {
-		if (data.equals("exit")) {
-			finished_ = true;
-		} else if (data.equals("anagrams")) {
-			RunAnagrams();
-		} else {
-			PrintHelp();
-		}
-	}
-
-	private static void PrintFinish()
-	{
-		System.out.println("The work with the bot was finished");
-	}
-
-	private static void PrintHelp()
-	{
-		System.out.println(helpMessage);
-	}
-
+	
 	public void Run() {
+		printHelp();
 		String data = inputStream_.nextLine();
-		while (IsCorrect(data)) {
-			DoCommand(data);
+		while (isCorrect(data)) {
+			doCommand(data);
 			if (finished_) {
 				break;
 			}
 			data = inputStream_.nextLine();
 		}
-		PrintFinish();
+		printFinish();
 		inputStream_.close();
 	}
 
 	public static void main(String[] args) {
 		Bot bot = new Bot();
 		bot.Run();
+	}
+
+	private boolean isCorrect(String data) {
+		return true;
+	}
+
+	private void runAnagrams() {
+	    Anagrams anagrams = new Anagrams();
+		System.out.println("Start anagrams game");
+		anagrams.run(inputStream_);
+	}
+
+	private void doCommand(String command) {
+		boolean wasGame = true;
+		if (command.equals(EXIT_COMMAND)) {
+			finished_ = true;
+			wasGame = false;
+		} else if (command.equals("\\" + Anagrams.GAME_NAME)) { //TODO change
+			runAnagrams();
+		} else {
+			printHelp();
+			wasGame = false;
+		}
+		if (wasGame)
+			printReturningMessage();
+	}
+
+	private void printFinish()
+	{
+		System.out.println(FINISH_MESSAGE);
+	}
+	
+	private void printReturningMessage()
+	{
+		System.out.println(RETURNING_MESSAGE);
+	}
+
+	private void printHelp()
+	{
+		System.out.println(HELP_MESSAGE);
 	}
 }
