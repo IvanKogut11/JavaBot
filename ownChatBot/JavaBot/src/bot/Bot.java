@@ -8,6 +8,7 @@ public class Bot {
 	private static final String HELP_MESSAGE = "Commands:\n"
 			+ "\\help - prints all available commands\n"
 			+ "\\anagrams - play game \"anagrams\"\n"
+			+ "\\hangman - play game \"hangman\"\n"
 			+ "\\exit - finish chatting with the bot";
 	private static final String EXIT_COMMAND = "\\exit";
 	private static final String FINISH_MESSAGE = "The work with the bot was finished";
@@ -49,6 +50,12 @@ public class Bot {
 		anagrams.run(inputStream_);
 	}
 
+	private void runHangman() {
+		Hangman hangman = new Hangman();
+		System.out.println("Start hangman game");
+		hangman.run(inputStream_);
+	}
+
 	private void doCommand(String command) {
 		boolean wasGame = true;
 		if (command.equals(EXIT_COMMAND)) {
@@ -56,6 +63,8 @@ public class Bot {
 			wasGame = false;
 		} else if (command.equals("\\" + Anagrams.GAME_NAME)) { //TODO change
 			runAnagrams();
+		} else if (command.equals("\\" + Hangman.GAME_NAME)) { //TODO change
+			runHangman();
 		} else {
 			printHelp();
 			wasGame = false;
