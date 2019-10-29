@@ -54,13 +54,31 @@ public class Hangman implements Game {
         }
     }
 
-    private void printStage(int stage, String current_word) {
+    private boolean runAttempt(int attempts, StringBuilder actual, String answer, Scanner input) {
+        printStage(attempts, actual);
+        String playerAnswer = input.nextLine();
+        boolean isCorrectTry = true;
+        if (playerAnswer.length() != 1 || !Character.isLowerCase(playerAnswer.charAt(0))) {
+            System.out.println("You entered an invalid character");
+        } else {
+            isCorrectTry = false;
+            for (int i = 0; i < actual.length(); ++i) {
+                if (answer.charAt(i) == playerAnswer.charAt(0) && actual.charAt(i) == '-') {
+                    actual.setCharAt(i, playerAnswer.charAt(0));
+                    isCorrectTry = true;
+                }
+            }
+        }
+        return isCorrectTry;
+    }
+
+    private void printStage(int stage, StringBuilder current_word) {
         System.out.println("Attempt: " + stage);
         System.out.println("Word: " + current_word);
         System.out.println("You character: ");
     }
 
-    private boolean isGameFinish(String expected, String actual) {
+    private boolean isGameFinish(String expected, StringBuilder actual) {
         if (expected.length() != actual.length()) {
             return false;
         }
@@ -79,30 +97,18 @@ public class Hangman implements Game {
     private void runRound(Scanner input) {
         int word_id = rand.nextInt(WORD_COUNT);
         String puz = words.get(word_id);
-        String current_word = "";
+        StringBuilder current_word = new StringBuilder();
         for (int i = 0; i < puz.length(); ++i) {
             if (i == 0 || i + 1 == puz.length()) {
-                current_word += puz.charAt(i);
+                current_word.append(puz.charAt(i));
             } else {
-                current_word += '-';
+                current_word.append('-');
             }
         }
+        System.out.println(puz);
         for (int attempts = 0; attempts < ATTEMPTS_COUNT;) {
-            printStage(attempts, current_word);
-            String ans = input.nextLine();
-            if (ans.length() != 1 || !Character.isLowerCase(ans.charAt(0))) {
-                System.out.println("You entered an invalid character");
-            } else {
-                boolean isCorrectTry = false;
-                for (int i = 0; i < puz.length(); ++i) {
-                    if (puz.charAt(i) == ans.charAt(0) && current_word.charAt(i) == '-') {
-                        current_word = replace(current_word, i, ans.charAt(0));
-                        isCorrectTry = true;
-                    }
-                }
-                if (!isCorrectTry) {
-                    ++attempts;
-                }
+            if (!runAttempt(attempts, current_word, puz, input)) {
+                ++attempts;
             }
             if (isGameFinish(puz, current_word)) {
                 System.out.println("You win!");
