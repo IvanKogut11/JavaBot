@@ -7,6 +7,7 @@ import java.io.IOException;
 
 public class Anagrams implements Game {
 	
+	public boolean IsFinished = false;
 	public static final String GAME_NAME = "anagrams";
 	private static final int WORD_COUNT = 1000;
 	private static final int SHUFFLE_CNT = 15;

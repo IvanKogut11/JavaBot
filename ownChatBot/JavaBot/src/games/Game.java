@@ -5,4 +5,6 @@ import java.util.Scanner;
 public interface Game {
 	void printRules();
 	void run(Scanner inputStream);
+	String outputString();
+	String gainInput();
 }
