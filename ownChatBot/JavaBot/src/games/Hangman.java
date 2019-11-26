@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Hangman implements Game {
-	public boolean IsFinished = false;
     public static final String GAME_NAME = "hangman";
     private static final int ATTEMPTS_COUNT = 6;
     private static final int WORD_COUNT = 832;
@@ -42,7 +41,7 @@ public class Hangman implements Game {
         System.out.println(RULES);
     }
 
-    public void run(Scanner inputStream) {
+    public void run() {
         System.out.println("");
         String arg = "y";
         printRules();
@@ -95,7 +94,7 @@ public class Hangman implements Game {
         return s.substring(0, pos) + new_char + s.substring(pos + 1);
     }
 
-    private void runRound(Scanner input) {
+    private void runRound() {
         int word_id = rand.nextInt(WORD_COUNT);
         String puz = words.get(word_id);
         StringBuilder current_word = new StringBuilder();

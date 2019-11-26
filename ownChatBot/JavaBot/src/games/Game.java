@@ -1,10 +1,8 @@
 package games;
 
-import java.util.Scanner;
+import bot.*;
 
 public interface Game {
 	void printRules();
-	void run(Scanner inputStream);
-	String outputString();
-	String gainInput();
+	void run(Bot bot);
 }

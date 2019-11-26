@@ -47,13 +47,13 @@ public class Bot {
 	private void runAnagrams() {
 	    Anagrams anagrams = new Anagrams();
 		System.out.println("Start anagrams game");
-		anagrams.run(inputStream_);
+		anagrams.run();
 	}
 
 	private void runHangman() {
 		Hangman hangman = new Hangman();
 		System.out.println("Start hangman game");
-		hangman.run(inputStream_);
+		hangman.run();
 	}
 
 	private void doCommand(String command) {

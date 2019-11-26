@@ -4,10 +4,9 @@ import java.util.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import bot.*;
 
 public class Anagrams implements Game {
-	
-	public boolean IsFinished = false;
 	public static final String GAME_NAME = "anagrams";
 	private static final int WORD_COUNT = 1000;
 	private static final int SHUFFLE_CNT = 15;
@@ -40,7 +39,7 @@ public class Anagrams implements Game {
 		System.out.println(RULES);
 	}
 
-	public void run(Scanner inputStream) {
+	public void run(Bot bot) {
 		System.out.println("");
 		String arg = "y";
 		printRules();
@@ -72,7 +71,7 @@ public class Anagrams implements Game {
 		return new String(charArray);
 	}
 
-	private void runRound(Scanner input) {
+	private void runRound() {
 		int word_id = rand.nextInt(WORD_COUNT);
 		String puz = words.get(word_id);
 		String req = shuffle(puz);
