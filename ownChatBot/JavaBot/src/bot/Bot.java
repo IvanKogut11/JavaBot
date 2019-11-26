@@ -21,15 +21,23 @@ public class Bot {
 		finished_ = false;
 	}
 	
+    void output(String str) {
+		System.out.println(str);
+    }
+
+    String input(String str) {
+        return inputStream_.nextLine();
+    }
+
 	public void Run() {
 		printHelp();
-		String data = inputStream_.nextLine();
+		String data = input();
 		while (isCorrect(data)) {
 			doCommand(data);
 			if (finished_) {
 				break;
 			}
-			data = inputStream_.nextLine();
+			data = inp();
 		}
 		printFinish();
 		inputStream_.close();
@@ -45,15 +53,15 @@ public class Bot {
 	}
 
 	private void runAnagrams() {
-	    Anagrams anagrams = new Anagrams();
-		System.out.println("Start anagrams game");
-		anagrams.run(inputStream_);
+	    Anagrams anagrams = new Anagrams(this);
+		output("Start anagrams game");
+		anagrams.run();
 	}
 
 	private void runHangman() {
-		Hangman hangman = new Hangman();
-		System.out.println("Start hangman game");
-		hangman.run(inputStream_);
+		Hangman hangman = new Hangman(this);
+		output("Start hangman game");
+		hangman.run();
 	}
 
 	private void doCommand(String command) {
@@ -75,16 +83,16 @@ public class Bot {
 
 	private void printFinish()
 	{
-		System.out.println(FINISH_MESSAGE);
+		output(FINISH_MESSAGE);
 	}
 	
 	private void printReturningMessage()
 	{
-		System.out.println(RETURNING_MESSAGE);
+		out(RETURNING_MESSAGE);
 	}
 
 	private void printHelp()
 	{
-		System.out.println(HELP_MESSAGE);
+		out(HELP_MESSAGE);
 	}
 }
