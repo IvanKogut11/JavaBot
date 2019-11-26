@@ -1,11 +1,15 @@
 package games;
 import java.io.File;
 import java.util.*;
+
+import bot.Bot;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
 public class Hangman implements Game {
+	private Bot curBot;
     public static final String GAME_NAME = "hangman";
     private static final int ATTEMPTS_COUNT = 6;
     private static final int WORD_COUNT = 832;
@@ -38,28 +42,29 @@ public class Hangman implements Game {
 
     public void printRules()
     {
-        System.out.println(RULES);
+        curBot.output(RULES);
     }
 
-    public void run() {
-        System.out.println("");
+    public void run(Bot bot) {
+    	curBot = bot;
+        curBot.output("");
         String arg = "y";
         printRules();
         while (!arg.equals("n")) {
-            runRound(inputStream);
-            System.out.println("Continue?(y\\n)");
-            arg = inputStream.nextLine();
+            runRound();
+            curBot.output("Continue?(y\\n)");
+            arg = curBot.input();
             while (!arg.equals("n") && !arg.equals("y"))
-                arg = inputStream.nextLine();
+                arg = curBot.input();
         }
     }
 
-    private boolean runAttempt(int attempts, StringBuilder actual, String answer, Scanner input) {
+    private boolean runAttempt(int attempts, StringBuilder actual, String answer) {
         printStage(attempts, actual);
-        String playerAnswer = input.nextLine();
+        String playerAnswer = curBot.input();
         boolean isCorrectTry = true;
         if (playerAnswer.length() != 1 || !Character.isLowerCase(playerAnswer.charAt(0))) {
-            System.out.println("You entered an invalid character");
+            curBot.output("You entered an invalid character");
         } else {
             isCorrectTry = false;
             for (int i = 0; i < actual.length(); ++i) {
@@ -73,9 +78,9 @@ public class Hangman implements Game {
     }
 
     private void printStage(int stage, StringBuilder current_word) {
-        System.out.println("Attempt: " + stage);
-        System.out.println("Word: " + current_word);
-        System.out.println("You character: ");
+        curBot.output("Attempt: " + stage);
+        curBot.output("Word: " + current_word);
+        curBot.output("You character: ");
     }
 
     private boolean isGameFinish(String expected, StringBuilder actual) {
@@ -90,10 +95,6 @@ public class Hangman implements Game {
         return true;
     }
 
-    private String replace(String s, int pos, char new_char) {
-        return s.substring(0, pos) + new_char + s.substring(pos + 1);
-    }
-
     private void runRound() {
         int word_id = rand.nextInt(WORD_COUNT);
         String puz = words.get(word_id);
@@ -105,16 +106,16 @@ public class Hangman implements Game {
                 current_word.append('-');
             }
         }
-        System.out.println(puz);
+        curBot.output(puz);
         for (int attempts = 0; attempts < ATTEMPTS_COUNT;) {
-            if (!runAttempt(attempts, current_word, puz, input)) {
+            if (!runAttempt(attempts, current_word, puz)) {
                 ++attempts;
             }
             if (isGameFinish(puz, current_word)) {
-                System.out.println("You win!");
+                curBot.output("You win!");
                 return;
             }
         }
-        System.out.println("You lose");
+        curBot.output("You lose");
     }
 }

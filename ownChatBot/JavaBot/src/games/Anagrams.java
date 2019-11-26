@@ -7,6 +7,7 @@ import java.io.IOException;
 import bot.*;
 
 public class Anagrams implements Game {
+	private Bot curBot;
 	public static final String GAME_NAME = "anagrams";
 	private static final int WORD_COUNT = 1000;
 	private static final int SHUFFLE_CNT = 15;
@@ -36,19 +37,20 @@ public class Anagrams implements Game {
 	
 	public void printRules()
 	{
-		System.out.println(RULES);
+		curBot.output(RULES);
 	}
 
 	public void run(Bot bot) {
-		System.out.println("");
+		curBot = bot;
+		curBot.output("");
 		String arg = "y";
 		printRules();
 		while (!arg.equals("n")) {
-			runRound(inputStream);
-			System.out.println("Continue?(y\\n)");
-			arg = inputStream.nextLine();
+			runRound();
+			curBot.output("Continue?(y\\n)");
+			arg = curBot.input();
 			while (!arg.equals("n") && !arg.equals("y"))
-				arg = inputStream.nextLine();
+				arg = curBot.input();
 		}
 	}
 
@@ -77,11 +79,11 @@ public class Anagrams implements Game {
 		String req = shuffle(puz);
 		String ans = "";
 
-		System.out.println("What is :" + req + "?");
+		curBot.output("What is :" + req + "?");
 		while (!ans.equals(puz)) {
-			ans = input.nextLine();
+			ans = curBot.input();
 			if (ans.equals("no idea")) {
-				System.out.println(puz);
+				curBot.output(puz);
 				return;
 			}
 		}
