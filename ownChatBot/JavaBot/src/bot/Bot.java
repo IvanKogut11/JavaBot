@@ -1,37 +1,34 @@
 package bot;
 import java.util.Scanner;
-//import java.util.HashMap;
+import java.util.HashMap;
 import games.*;
 
-public class Bot {
-	
-	private static final String HELP_MESSAGE = "Commands:\n"
-			+ "\\help - prints all available commands\n"
-			+ "\\anagrams - play game \"anagrams\"\n"
-			+ "\\hangman - play game \"hangman\"\n"
-			+ "\\exit - finish chatting with the bot";
-	private static final String EXIT_COMMAND = "\\exit";
-	private static final String FINISH_MESSAGE = "The work with the bot was finished";
-	private static final String RETURNING_MESSAGE = "You've returned to bot";
+public class Bot implements BotImpl {
 	private Scanner inputStream_;
-	private boolean finished_;
+	HashMap<String, GameImpl> games_;
 
 	public Bot() {
 		inputStream_ = new Scanner(System.in);
-		finished_ = false;
+		// Add games Here
+		games_.put("Anagrams", new Anagrams());
+		games_.put("Hangman", new Hangman());
 	}
-	
+
 	public void Run() {
-		printHelp();
-		String data = inputStream_.nextLine();
-		while (isCorrect(data)) {
-			doCommand(data);
-			if (finished_) {
+		Help helper = new Help();
+		SendMessage(helper.GetInfo());
+		while (true) {
+			SaveBackup();
+			String message = GetMessage();
+			if (message == "\\exit") {
 				break;
 			}
-			data = inputStream_.nextLine();
+			try {
+				DoCommand(message);
+			} catch (Exception ex) {
+				LoadBackup();
+			}
 		}
-		printFinish();
 		inputStream_.close();
 	}
 
@@ -40,51 +37,28 @@ public class Bot {
 		bot.Run();
 	}
 
-	private boolean isCorrect(String data) {
-		return true;
+	private void SaveBackup() { // TODO
 	}
 
-	private void runAnagrams() {
-	    Anagrams anagrams = new Anagrams();
-		System.out.println("Start anagrams game");
-		anagrams.run(inputStream_);
+	private void LoadBackup() { // TODO
 	}
 
-	private void runHangman() {
-		Hangman hangman = new Hangman();
-		System.out.println("Start hangman game");
-		hangman.run(inputStream_);
+	private void SendMessage(String message) {
+		System.out.println(message);
 	}
 
-	private void doCommand(String command) {
-		boolean wasGame = true;
-		if (command.equals(EXIT_COMMAND)) {
-			finished_ = true;
-			wasGame = false;
-		} else if (command.equals("\\" + Anagrams.GAME_NAME)) { //TODO change
-			runAnagrams();
-		} else if (command.equals("\\" + Hangman.GAME_NAME)) { //TODO change
-			runHangman();
-		} else {
-			printHelp();
-			wasGame = false;
+	private String GetMessage() {
+		return inputStream_.nextLine();
+	}
+
+	private void DoCommand(String command) {
+		for (GameImpl game : games_.values()) {
+			if (game.ExpectCommand(command)) {
+				String reply = game.Execute(command);  //TODO отдельный тип для ответа(не String)
+				if (reply != "") {
+					SendMessage(reply);
+				}
+			}
 		}
-		if (wasGame)
-			printReturningMessage();
-	}
-
-	private void printFinish()
-	{
-		System.out.println(FINISH_MESSAGE);
-	}
-	
-	private void printReturningMessage()
-	{
-		System.out.println(RETURNING_MESSAGE);
-	}
-
-	private void printHelp()
-	{
-		System.out.println(HELP_MESSAGE);
 	}
 }

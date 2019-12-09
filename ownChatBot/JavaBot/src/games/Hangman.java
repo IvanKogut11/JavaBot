@@ -5,7 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class Hangman implements Game {
+public class Hangman implements GameImpl {
     public static final String GAME_NAME = "hangman";
     private static final int ATTEMPTS_COUNT = 6;
     private static final int WORD_COUNT = 832;
