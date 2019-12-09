@@ -1,15 +1,11 @@
 package games;
-import javax.security.auth.login.FailedLoginException;
-import java.io.File;
+import java.io.*;
 import java.util.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 
 public class Anagrams implements GameImpl {
 	private static final int WORD_COUNT = 1000;
 	private static final int SHUFFLE_CNT = 15;
-	private static ArrayList<String> words = new ArrayList<String>();
+	private static ArrayList<String> words = new ArrayList<>();
 	private static Random rand = new Random();
 	private static final String RULES = "In this game you are given English word which letters are shuffled.\n"
 			   							+ "You need guess it!\n"
@@ -38,17 +34,20 @@ public class Anagrams implements GameImpl {
 
 	static
 	{
-		//LoadWords();
+		LoadWords();
 	}
 
 	public Anagrams() {
-		//state_ = State.WAIT_BEGIN;
+		state_ = State.WAIT_BEGIN;
 	}
 
 	private static void LoadWords() {
 		String abs_path = new File(".").getAbsolutePath();
-		abs_path = abs_path.substring(0, abs_path.length() - 1) + File.separatorChar + "ownChatBot" + File.separator
-				+ "JavaBot" + File.separatorChar + "src" + File.separatorChar + "games"
+		abs_path = abs_path.substring(0, abs_path.length() - 1)
+				+ File.separatorChar + "ownChatBot"
+				+ File.separatorChar + "JavaBot"
+				+ File.separatorChar + "src"
+				+ File.separatorChar + "games"
 				+ File.separatorChar + "word_bucket.txt"; // TODO File.separatorChar
 		try (FileReader reader = new FileReader(abs_path);
 			 BufferedReader br = new BufferedReader(reader)) {
@@ -79,24 +78,26 @@ public class Anagrams implements GameImpl {
 
 	private String puz;
 
+	// TODO Сделать словарь с командами и вызывать Commands[command](state_)
+	// TODO Сделать лог в котором будет хранится ответ на задачу
 	@Override
-	public String Execute(String command) { // TODO Сделать словарь с командами и вызывать Commands[command](state_)
+	public String Execute(String command) {
 		if (state_ == State.WAIT_BEGIN) {
 			state_ = State.IN_GAME;
 			puz = GetPuz();
-			return GetRules() + puz;
+			return GetRules() + shuffle(puz) + "\n";
 		}
 		if (state_ == State.IN_GAME) {
 			if (command.equals(puz)) {
 				state_ = State.OVER;
-				return "Right!\n Do you want to try again?(y/n)"; //TODO вынести куда-то
+				return "Right!\nDo you want to try again?(y/n)"; //TODO вынести куда-то
 			}
 			return "Wrong:(";
 		}
 		if (command.equals("y")) {
 			state_ = State.IN_GAME;
 			puz = GetPuz();
-			return puz;
+			return shuffle(puz);
 		}
 		state_ = State.WAIT_BEGIN;
 		return "";
@@ -104,11 +105,37 @@ public class Anagrams implements GameImpl {
 
 	@Override
 	public void SaveBackup() {
+		String abs_path = new File(".").getAbsolutePath();
+		abs_path = abs_path.substring(0, abs_path.length() - 1)
+				+ "ownChatBot/JavaBot/tmp/anagram.txt";
+		try (FileWriter reader = new FileWriter(abs_path);
+			 BufferedWriter br = new BufferedWriter(reader)) {
+
+			br.write(state_.toString() + "\n" + puz + "\n");
+		} catch (IOException e) {
+			System.err.format("IOException: %s%n", e);
+		}
 	}
+
+	@Override
+	public void LoadBackup() {
+		String abs_path = new File(".").getAbsolutePath();
+		abs_path = abs_path.substring(0, abs_path.length() - 1)
+				+ "ownChatBot/JavaBot/tmp/anagram.txt";
+		try (FileReader reader = new FileReader(abs_path);
+			 BufferedReader br = new BufferedReader(reader)) {
+
+			state_ = State.valueOf(br.readLine());
+			puz = br.readLine();
+		} catch (IOException e) {
+			System.err.format("IOException: %s%n", e);
+		}
+	}
+
 
 	private String GetPuz() {
 		int word_id = rand.nextInt(WORD_COUNT);
-		return shuffle(words.get(word_id));
+		return words.get(word_id);
 	}
 
 	private String shuffle(String word) {
