@@ -111,4 +111,24 @@ public class Hangman implements GameImpl {
         }
         System.out.println("You lose");
     }
+
+    @Override
+    public String GetRules() {
+        return null;
+    }
+
+    @Override
+    public boolean ExpectCommand(String command) {
+        return false;
+    }
+
+    @Override
+    public String Execute(String command) {
+        return null;
+    }
+
+    @Override
+    public void SaveBackup() {
+
+    }
 }

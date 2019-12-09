@@ -11,7 +11,7 @@ public class Bot implements BotImpl {
 		inputStream_ = new Scanner(System.in);
 		// Add games Here
 		games_.put("Anagrams", new Anagrams());
-		games_.put("Hangman", new Hangman());
+		//games_.put("Hangman", new Hangman());
 	}
 
 	public void Run() {
@@ -20,7 +20,7 @@ public class Bot implements BotImpl {
 		while (true) {
 			SaveBackup();
 			String message = GetMessage();
-			if (message == "\\exit") {
+			if (message.equals("\\exit")) {
 				break;
 			}
 			try {
