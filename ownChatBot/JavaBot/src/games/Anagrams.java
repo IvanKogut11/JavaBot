@@ -87,6 +87,6 @@ public class Anagrams implements Game {
 				return;
 			}
 		}
-		System.out.println("You right!");
+		curBot.output("You right!");
 	}
 }
